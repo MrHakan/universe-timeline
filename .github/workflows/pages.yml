@@ -1,0 +1,61 @@
+name: Deploy Universe Timeline to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: |
+          node --check engine.js
+          node --check engine-core.js
+          node --check balance.js
+          node --check app.js
+          node --check tests/smoke.mjs
+      - name: Check required web files
+        run: |
+          test -f index.html
+          test -f styles.css
+          test -f engine-core.js
+          test -f balance.js
+          test -f app.js
+          grep -q 'id="galaxy"' index.html
+          grep -q 'script src="engine-core.js"' index.html
+          grep -q 'script src="balance.js"' index.html
+          grep -q 'script src="app.js"' index.html
+      - name: Run 100-year simulation smoke test
+        run: node tests/smoke.mjs
+
+  deploy:
+    needs: validate
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
