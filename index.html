@@ -7,6 +7,7 @@
   <meta name="description" content="A self-running galactic civilization timeline simulator." />
   <title>Universe Timeline Simulator</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="expansion.css" />
 </head>
 <body>
   <div class="app-shell">
@@ -22,6 +23,7 @@
       </aside>
       <section class="timeline-panel panel"><div class="panel-head timeline-head"><div><span class="eyebrow">LIVE HISTORY</span><h2>Timeline</h2></div><div class="timeline-controls"><select id="eventFilter"><option value="all">All events</option><option value="war">Wars</option><option value="diplomacy">Diplomacy</option><option value="economy">Economy</option><option value="politics">Politics</option><option value="science">Science</option><option value="crisis">Crises</option></select><button class="soft-btn compact" id="clearTimelineBtn">Clear view</button></div></div><div class="timeline" id="timeline"></div></section>
       <section class="ledger-panel panel"><div class="panel-head ledger-head"><div><span class="eyebrow">GALACTIC LEDGER</span><h2>Factions</h2></div><div class="ledger-tabs" id="ledgerTabs"><button class="active" data-ledger="factions">Factions</button><button data-ledger="wars">Wars</button><button data-ledger="alliances">Alliances</button><button data-ledger="stats">Statistics</button></div></div><div id="ledgerContent" class="ledger-content"></div></section>
+      <section class="deep-panel panel" id="deepPanel"><div class="panel-head"><div><span class="eyebrow">DEEP CIVILIZATION SIMULATION</span><h2>Institutions, Culture & Long History</h2></div><span class="deep-pill">EXPANSION II</span></div><div id="deepContent" class="deep-content"><div class="empty-deep">Initializing civilization systems…</div></div></section>
     </main>
     <section class="intervention-dock" id="interventionDock"><div class="dock-label"><span>OBSERVER</span><b>Interventions</b></div><button data-action="prosperity" title="Boost selected faction economy">✦ Prosperity</button><button data-action="technology" title="Gift technology">⌁ Technology</button><button data-action="peace" title="Force peace">☮ Peace</button><button data-action="tension" title="Increase diplomatic tension">⚡ Tension</button><button data-action="rebellion" title="Trigger unrest">⚑ Rebellion</button><button data-action="disaster" title="Strike selected system">☄ Disaster</button></section>
   </div>
@@ -30,6 +32,8 @@
   <script src="engine.js"></script>
   <script src="engine-core.js"></script>
   <script src="balance.js"></script>
+  <script src="expansion.js"></script>
   <script src="app.js"></script>
+  <script src="expansion-ui.js"></script>
 </body>
 </html>
