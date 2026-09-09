@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#070b12" />
+  <meta name="description" content="A self-running galactic civilization timeline simulator." />
+  <title>Universe Timeline Simulator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-orbit" aria-hidden="true"><i></i></div>
+        <div>
+          <h1>Universe Timeline</h1>
+          <p>Watch civilizations rise, trade, ally, fracture and go to war.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <div class="date-chip"><span>GALACTIC YEAR</span><b id="yearLabel">2200.01</b></div>
+        <button class="soft-btn" id="saveBtn">Save</button>
+        <button class="soft-btn" id="loadBtn">Load</button>
+        <button class="soft-btn" id="exportBtn">Export</button>
+        <label class="soft-btn import-label">Import<input type="file" id="importInput" accept="application/json,.json" hidden></label>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <section class="map-panel panel">
+        <div class="panel-toolbar map-toolbar">
+          <div class="toolbar-group">
+            <button class="icon-btn" id="pauseBtn" title="Pause / Resume">❚❚</button>
+            <button class="speed-btn active" data-speed="1">1×</button>
+            <button class="speed-btn" data-speed="4">4×</button>
+            <button class="speed-btn" data-speed="16">16×</button>
+            <button class="speed-btn" data-speed="64">64×</button>
+          </div>
+          <div class="toolbar-group overlays" id="overlayButtons">
+            <button class="overlay-btn active" data-overlay="political">Political</button>
+            <button class="overlay-btn" data-overlay="economy">Economy</button>
+            <button class="overlay-btn" data-overlay="population">Population</button>
+            <button class="overlay-btn" data-overlay="diplomacy">Diplomacy</button>
+          </div>
+          <div class="toolbar-group">
+            <button class="icon-btn" id="fitBtn" title="Fit galaxy">⌖</button>
+            <button class="icon-btn" id="zoomOutBtn" title="Zoom out">−</button>
+            <button class="icon-btn" id="zoomInBtn" title="Zoom in">+</button>
+          </div>
+        </div>
+        <div class="map-wrap" id="mapWrap">
+          <canvas id="galaxy" width="1600" height="1000"></canvas>
+          <div class="map-hint">Drag to pan · Wheel/pinch to zoom · Click a system</div>
+          <div class="map-legend" id="mapLegend"></div>
+        </div>
+      </section>
+
+      <aside class="side-stack">
+        <section class="panel observer-panel">
+          <div class="panel-head"><div><span class="eyebrow">OBSERVER CONSOLE</span><h2>World State</h2></div><button class="soft-btn compact" id="newUniverseBtn">New Universe</button></div>
+          <div class="seed-row"><label>Seed<input id="seedInput" value="SOL-2200"></label><button class="soft-btn" id="applySeedBtn">Generate</button></div>
+          <div class="metric-grid">
+            <div class="metric"><span>FACTIONS</span><b id="metricFactions">—</b></div>
+            <div class="metric"><span>POPULATION</span><b id="metricPopulation">—</b></div>
+            <div class="metric"><span>AT WAR</span><b id="metricWars">—</b></div>
+            <div class="metric"><span>TRADE</span><b id="metricTrade">—</b></div>
+          </div>
+          <div class="era-card"><span>CURRENT ERA</span><b id="eraName">Age of Expansion</b><p id="eraText">Young civilizations reach beyond their home systems.</p></div>
+        </section>
+
+        <section class="panel focus-panel" id="focusPanel">
+          <div class="panel-head"><div><span class="eyebrow">SELECTED</span><h2 id="focusTitle">No system selected</h2></div><span class="status-dot" id="focusDot"></span></div>
+          <div id="focusBody" class="focus-empty">Select a star system or a faction from the ledger.</div>
+        </section>
+      </aside>
+
+      <section class="timeline-panel panel">
+        <div class="panel-head timeline-head">
+          <div><span class="eyebrow">LIVE HISTORY</span><h2>Timeline</h2></div>
+          <div class="timeline-controls">
+            <select id="eventFilter"><option value="all">All events</option><option value="war">Wars</option><option value="diplomacy">Diplomacy</option><option value="economy">Economy</option><option value="politics">Politics</option><option value="science">Science</option><option value="crisis">Crises</option></select>
+            <button class="soft-btn compact" id="clearTimelineBtn">Clear view</button>
+          </div>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </section>
+
+      <section class="ledger-panel panel">
+        <div class="panel-head ledger-head">
+          <div><span class="eyebrow">GALACTIC LEDGER</span><h2>Factions</h2></div>
+          <div class="ledger-tabs" id="ledgerTabs"><button class="active" data-ledger="factions">Factions</button><button data-ledger="wars">Wars</button><button data-ledger="alliances">Alliances</button><button data-ledger="stats">Statistics</button></div>
+        </div>
+        <div id="ledgerContent" class="ledger-content"></div>
+      </section>
+    </main>
+
+    <section class="intervention-dock" id="interventionDock">
+      <div class="dock-label"><span>OBSERVER</span><b>Interventions</b></div>
+      <button data-action="prosperity" title="Boost the selected faction's economy">✦ Prosperity</button>
+      <button data-action="technology" title="Gift technology to the selected faction">⌁ Technology</button>
+      <button data-action="peace" title="Force peace for the selected faction">☮ Peace</button>
+      <button data-action="tension" title="Increase diplomatic tension">⚡ Tension</button>
+      <button data-action="rebellion" title="Trigger unrest in the selected faction">⚑ Rebellion</button>
+      <button data-action="disaster" title="Strike the selected system with a disaster">☄ Disaster</button>
+    </section>
+  </div>
+
+  <div class="modal hidden" id="newUniverseModal">
+    <div class="modal-card">
+      <div class="modal-head"><div><span class="eyebrow">GENESIS</span><h2>Create New Universe</h2></div><button class="close-btn" data-close="newUniverseModal">×</button></div>
+      <label>Seed<input id="modalSeed" value="SOL-2200"></label>
+      <label>Star systems<select id="systemCount"><option value="100">100 · Compact</option><option value="180" selected>180 · Standard</option><option value="260">260 · Large</option></select></label>
+      <label>Starting civilizations<select id="factionCount"><option value="6">6</option><option value="10" selected>10</option><option value="14">14</option></select></label>
+      <label>Simulation temperament<select id="temperament"><option value="calm">Calm</option><option value="balanced" selected>Balanced</option><option value="volatile">Volatile</option><option value="chaos">Chaos</option></select></label>
+      <button class="primary-btn" id="createUniverseBtn">BEGIN TIMELINE</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
